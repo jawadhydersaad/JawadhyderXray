@@ -4,7 +4,7 @@ import re
 import requests
 
 # إدخال مفتاح API يدويًا
-api_key = st.text_input("AIzaSyAlJNTXZz0UzKhTtYCNSYABkD53g_QnPmE:", type="password")
+api_key = st.text_input("AIzaSyAlJNTXZz0UzKhTtYCNSYABkD53g_QnPmE", type="password")
 api_url = "https://api.gemini.com/v1/xray-analysis"  # تأكد من صحة هذا الرابط وفقًا لوثائق API
 
 # إعداد الواجهة
