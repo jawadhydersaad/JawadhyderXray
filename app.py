@@ -38,7 +38,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<p class="title">تحليل الاشعة السينية بالذكاء الاصطناعي</p>', unsafe_allow_html=True)
-st.markdown('<p class="subheader">تطبيق مبرمج لتحليل صور الاشعة السينية باستخدام التعلم العميث وتعلم الالة بالذكاء الاصطناعي الاعداد : جواد حيدر سعد</p>', unsafe_allow_html=True)
+st.markdown('<p class="subheader">تطبيق مبرمج لتحليل صور الاشعة السينية باستخدام التعلم العميق وتعلم الالة بالذكاء الاصطناعي الاعداد : جواد حيدر سعد</p>', unsafe_allow_html=True)
 
 # تقسيم الصفحة
 col1, col2 = st.columns([1, 2])
