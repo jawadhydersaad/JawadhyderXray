@@ -1,71 +1,52 @@
-import streamlit as st
 from PIL import Image
+import streamlit as st
 import google.generativeai as genai
+
 from configs import SYSTEM_PROMPT, SAFETY_SETTINGS, GENERATION_CONFIG, MODEL_NAME
 
-def configure_model():
-    genai.configure(api_key="AIzaSyByxD3APIGmf1aA_PnTzR7jpl53FvUzwlk")
-    return genai.GenerativeModel(
+
+if __name__ == '__main__':
+    # Configure Model
+    genai.configure(api_key='{AIzaSyByxD3APIGmf1aA_PnTzR7jpl53FvUzwlk}')  # Check https://github.com/google-gemini/cookbook
+    model = genai.GenerativeModel(
         model_name=MODEL_NAME,
         safety_settings=SAFETY_SETTINGS,
         generation_config=GENERATION_CONFIG,
         system_instruction=SYSTEM_PROMPT
     )
 
-# إعداد الصفحة
-st.set_page_config(page_title='تحليل الأشعة السينية', page_icon='⚕️', layout='wide')
-st.markdown("""
-    <style>
-        .title {
-            text-align: center;
-            font-size: 32px;
-            font-weight: bold;
-            color: #2E8B57;
-        }
-        .subheader {
-            text-align: center;
-            font-size: 20px;
-            color: #555;
-        }
-        .stButton>button {
-            width: 100%;
-            background: #2E8B57;
-            color: white;
-            font-size: 18px;
-            border-radius: 8px;
-        }
-    </style>
-""", unsafe_allow_html=True)
+    # Setup Page
+    # Head
+    st.set_page_config(page_title='Axe Analytics')
+    st.title('Axe Analytics')
+    st.subheader('Analyzing medical images using AI (Gemini).')
 
-st.markdown('<p class="title">تحليل الاشعة السينية بالذكاء الاصطناعي</p>', unsafe_allow_html=True)
-st.markdown('<p class="subheader">تطبيق مبرمج لتحليل صور الاشعة السينية باستخدام التعلم العميق وتعلم الالة بالذكاء الاصطناعي الاعداد : جواد حيدر سعد</p>', unsafe_allow_html=True)
+    # Body
+    col1, col2 = st.columns([1, 5])
+    submit_btn = col1.button('ANALYZE', use_container_width=True)
+    uploaded_file = col2.file_uploader('Upload X-Ray Image:', type=['png', 'jpg', 'jpeg'], accept_multiple_files=False)
+    col3, col4 = st.columns(2)
+    if uploaded_file:
+        image_data = Image.open(uploaded_file)
+        col3.image(image_data, use_column_width=True)  # Display Image
+        message = col4.chat_message("Model:")
 
-# تقسيم الصفحة
-col1, col2 = st.columns([1, 2])
-uploaded_file = col1.file_uploader("📤 رفع صورة الأشعة السينية:", type=['png', 'jpg', 'jpeg'])
-submit_btn = col1.button("🔎 تحليل الصورة")
-
-if uploaded_file:
-    try:
-        image = Image.open(uploaded_file).convert("RGB")
-        col2.image(image, caption='📷 الصورة المرفوعة', use_column_width=True)
-    except Exception as e:
-        st.error(f"❌ خطأ في تحميل الصورة: {e}")
-        image = None
-
-if submit_btn and uploaded_file:
-    if image:
-        model = configure_model()
-        chat_session = model.start_chat()
+    if submit_btn:
+        # Analyze uploaded image
+        history = st.session_state['history'] if 'history' in st.session_state else []
 
         content = [
-            "هذه صورة أشعة سينية لمريض. قم بتحليلها لاكتشاف أي أمراض محتملة، مثل الالتهاب الرئوي، الكسور، الأورام، السل، أمراض القلب أو أي حالات غير طبيعية أخرى. قدم تقريرًا طبيًا شاملًا.",
-            image
+            "Analyze this image.",
+            image_data
         ]
 
+        history.append({
+            "role": "user",
+            "parts": content,
+        })
+
+        chat_session = model.start_chat()
         response = chat_session.send_message(content)
-        st.success("✅ تم تحليل الصورة بنجاح!")
-        st.markdown("### 📝 التقرير الطبي:")
-        st.write(response.text)
-    else:
-        st.error("⚠️ يرجى تحميل صورة صالحة قبل التحليل.")
+        message.write(response.text)
+
+        st.session_state['history'] = chat_session.history
