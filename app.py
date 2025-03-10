@@ -37,7 +37,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<p class="title">الاعداد : جواد حيدر سعد تحليل الأشعة السينية بالذكاء الاصطناعي</p>', unsafe_allow_html=True)
+st.markdown('<p class="title">تحليل الاشعة السينية بالذكاء الاصطناعي الاعداد : جواد حيدر سعد</p>', unsafe_allow_html=True)
 st.markdown('<p class="subheader">رفع صورة الأشعة السينية وتحليلها لاكتشاف الأمراض المحتملة</p>', unsafe_allow_html=True)
 
 # تقسيم الصفحة
